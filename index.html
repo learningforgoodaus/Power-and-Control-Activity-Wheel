@@ -12,7 +12,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7f7f7; /* Very light grey background */
+            background-color: #F2F2F2; /* BRAND COLOR: Off-white/Light Grey */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,8 +24,8 @@
         /* Main container for the entire activity */
         .learning-activity-container {
             position: relative;
-            width: 800px; /* INCREASED base width for better spacing */
-            height: 800px; /* INCREASED base height */
+            width: 800px; 
+            height: 800px; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -33,25 +33,25 @@
 
         /* Styling for the large central circle */
         .large-circle {
-            width: 400px; /* INCREASED base width for more text */
-            height: 400px; /* INCREASED base height for more text */
-            background-color: #e0f2fe; /* Light blue (Sky 100) */
+            width: 400px; 
+            height: 400px; 
+            background-color: #C6B4D9; /* BRAND COLOR: Light Purple/Lavender */
             border-radius: 50%; 
             display: flex;
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
-            padding: 40px; /* Increased padding */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            padding: 40px; 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
             transition: all 0.5s ease-in-out; 
             position: absolute; 
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%); 
-            color: #0c4a6e; /* Dark blue text */
+            color: #413659; /* BRAND COLOR: Darker Deep Purple */
             line-height: 1.6;
             box-sizing: border-box; 
-            border: 5px solid #075985; /* Central border for emphasis */
+            border: 5px solid #9C7F9D; /* BRAND COLOR: Muted Rose/Mauve */
         }
 
         .large-circle-content {
@@ -90,10 +90,10 @@
         /* Styling for individual small circles (Spokes) */
         .small-circle {
             position: absolute;
-            width: 100px; /* INCREASED small circle size */
-            height: 100px; /* INCREASED small circle size */
-            background-color: #075985; /* Darker blue */
-            color: #f7f7f7; /* Off-white text */
+            width: 100px; 
+            height: 100px; 
+            background-color: #513873; /* BRAND COLOR: Deep Purple */
+            color: #F2F2F2; /* BRAND COLOR: Off-white text */
             border-radius: 50%; 
             display: flex;
             justify-content: center;
@@ -103,7 +103,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
             transition: transform 0.7s ease-in-out,
                         width 0.3s ease-in-out, height 0.3s ease-in-out,
-                        border 0.3s ease-in-out, color 0.3s ease-in-out;
+                        border 0.3s ease-in-out, color 0.3s ease-in-out,
+                        background-color 0.3s ease-in-out;
             font-size: 0.8rem; 
             font-weight: 600;
             padding: 5px;
@@ -113,14 +114,14 @@
 
         /* Styling for the active (clicked) small circle */
         .small-circle.active {
-            width: 120px; /* INCREASED Active size */
-            height: 120px; /* INCREASED Active size */
-            border: 5px solid #f97316; /* Brand orange border (Amber 600) */
-            background-color: #fdba74; /* Lighter orange background (Amber 300) */
-            color: #7c2d12; /* Darker text for contrast */
+            width: 120px; 
+            height: 120px; 
+            border: 5px solid #413659; /* BRAND COLOR: Darker Deep Purple for strong contrast border */
+            background-color: #C6B4D9; /* BRAND COLOR: Light Purple/Lavender for active fill */
+            color: #513873; /* BRAND COLOR: Deep Purple for active text */
             z-index: 10; 
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
-            transform: scale(1.1); /* Slight bump for focus */
+            transform: scale(1.1); 
         }
 
         /* Responsive adjustments for smaller screens */
@@ -131,8 +132,8 @@
             }
 
             .large-circle {
-                width: 65vw; /* INCREASED for more text on mobile */
-                height: 65vw; /* INCREASED for more text on mobile */
+                width: 65vw; 
+                height: 65vw; 
                 padding: 15px;
             }
 
@@ -145,14 +146,14 @@
             }
 
             .small-circle {
-                width: 17vw; /* Adjusted for increased size */
+                width: 17vw; 
                 height: 17vw;
                 font-size: 0.6rem;
                 padding: 3px;
             }
 
             .small-circle.active {
-                width: 20vw; /* Adjusted for increased size */
+                width: 20vw; 
                 height: 20vw;
             }
         }
@@ -195,10 +196,10 @@
         let lastClickedSectionIndex = -1; 
 
         // Base sizes for calculations (desktop reference)
-        const BASE_CONTAINER_WIDTH = 800; // Updated base width
-        const LARGE_CIRCLE_DIAMETER_PX = 400; // Updated large circle diameter
-        const SMALL_CIRCLE_DIAMETER_PX = 100; // INCREASED
-        const ACTIVE_SMALL_CIRCLE_DIAMETER_PX = 120; // INCREASED
+        const BASE_CONTAINER_WIDTH = 800; 
+        const LARGE_CIRCLE_DIAMETER_PX = 400; 
+        const SMALL_CIRCLE_DIAMETER_PX = 100; 
+        const ACTIVE_SMALL_CIRCLE_DIAMETER_PX = 120; 
         const PADDING_FROM_LARGE_CIRCLE = 60; 
 
         // Angle steps for distributing 8 circles (4 per side)
