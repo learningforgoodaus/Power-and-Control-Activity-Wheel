@@ -156,14 +156,15 @@
                 height: 95vw;
             }
 
+            /* INCREASED SIZE BY APPROX 1CM (from 65vw to 75vw) */
             .large-circle {
-                width: 65vw;
-                height: 65vw;
-                padding: 15px;
+                width: 75vw;
+                height: 75vw;
+                padding: 20px;
             }
 
             .large-circle-content p {
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
 
             .large-circle-content h2 {
@@ -247,10 +248,14 @@
             const containerHeight = learningActivityContainer.offsetHeight;
             const refSize = Math.min(containerWidth, containerHeight);
             
-            const largeCircleRatio = LARGE_CIRCLE_DIAMETER_PX / BASE_CONTAINER_WIDTH;
+            // Adjust ratio to account for larger mobile circle
+            const isMobile = window.innerWidth <= 768;
+            const largeCircleBase = isMobile ? (BASE_CONTAINER_WIDTH * 0.75) : LARGE_CIRCLE_DIAMETER_PX;
+            
+            const largeCircleRatio = largeCircleBase / BASE_CONTAINER_WIDTH;
             const smallCircleRatio = SMALL_CIRCLE_DIAMETER_PX / BASE_CONTAINER_WIDTH;
             const activeSmallCircleRatio = ACTIVE_SMALL_CIRCLE_DIAMETER_PX / BASE_CONTAINER_WIDTH;
-            const paddingRatio = PADDING_FROM_LARGE_CIRCLE / BASE_CONTAINER_WIDTH;
+            const paddingRatio = (isMobile ? 20 : PADDING_FROM_LARGE_CIRCLE) / BASE_CONTAINER_WIDTH;
 
             return {
                 largeCircleDiameter: refSize * largeCircleRatio,
