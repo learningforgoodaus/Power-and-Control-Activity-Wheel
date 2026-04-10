@@ -29,13 +29,13 @@
             font-size: 1.875rem;
             font-weight: 700;
             color: #413659;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(5px);
             z-index: 50;
         }
 
-        /* PC CONTAINER - RESTORED ORIGINAL SIZE */
+        /* PC CONTAINER: RESTORED ORIGINAL FIXED SIZE */
         .learning-activity-container {
             position: relative;
             width: 800px;
@@ -45,7 +45,7 @@
             align-items: center;
         }
 
-        /* PC LARGE CIRCLE - RESTORED ORIGINAL SIZE */
+        /* LARGE CIRCLE: RESTORED ORIGINAL FIXED SIZE */
         .large-circle {
             width: 400px;
             height: 400px;
@@ -83,7 +83,15 @@
         .large-circle-content p { font-size: 1.05rem; font-weight: 500; margin: 0; }
         .large-circle-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
 
-        /* PC SMALL CIRCLES - RESTORED ORIGINAL BEHAVIOR */
+        #small-circles-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        /* SMALL CIRCLES: RESTORED ORIGINAL FIXED SIZE & TRANSITIONS */
         .small-circle {
             position: absolute;
             width: 100px;
@@ -98,11 +106,11 @@
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             transition: transform 0.7s ease-in-out, width 0.3s, height 0.3s, background-color 0.3s, color 0.3s;
-            z-index: 20;
             font-size: 0.8rem;
             font-weight: 600;
             padding: 5px;
             box-sizing: border-box;
+            line-height: 1.2;
         }
 
         .small-circle.active {
@@ -111,41 +119,38 @@
             border: 5px solid #413659;
             background-color: #C6B4D9;
             color: #513873;
+            z-index: 20;
             transform: scale(1.1);
         }
 
-        /* MOBILE VIEW ONLY CHANGES */
+        /* MOBILE VIEW ONLY */
         @media (max-width: 768px) {
             .learning-activity-container {
                 width: 100vw;
                 height: 100vh;
             }
-
             .large-circle {
                 width: 85vw;
                 height: 85vw;
-                padding: 20px;
+                padding: 25px;
             }
-
             .large-circle-content h2 { font-size: 1.1rem; }
             .large-circle-content p { font-size: 0.85rem; }
-
-            .circle-title { display: none; } /* Hide text, keep numbers only */
-            .circle-number { font-size: 1.4rem !important; display: block; width: 100%; text-align: center; }
-
+            .circle-title { display: none; }
+            .circle-number { font-size: 1.5rem !important; }
             .small-circle {
                 width: 15vw;
                 height: 15vw;
-                transition: background-color 0.3s, color 0.3s; /* No transform transition on mobile */
+                /* Disable transform transition on mobile for static feel */
+                transition: background-color 0.3s, color 0.3s; 
             }
-
-            /* Flip effect color for mobile */
             .small-circle.active {
                 width: 15vw !important;
                 height: 15vw !important;
-                transform: none !important; 
-                background-color: #9C7F9D;
-                color: white;
+                transform: none !important;
+                background-color: #9C7F9D !important;
+                color: white !important;
+                border: 2px solid #413659;
             }
         }
     </style>
@@ -179,68 +184,84 @@
         const container = document.querySelector('.learning-activity-container');
         let activeCircleId = null;
 
-        function render() {
+        function renderCircles() {
             const isMobile = window.innerWidth <= 768;
-            const centerX = container.offsetWidth / 2;
-            const centerY = container.offsetHeight / 2;
-            const activeIndex = sectionsData.findIndex(s => s.id === activeCircleId);
+            
+            // USE THE CONTAINER REFS
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const centerX = containerWidth / 2;
+            const centerY = containerHeight / 2;
+
+            const activeSectionIndex = sectionsData.findIndex(s => s.id === activeCircleId);
 
             sectionsData.forEach((section, index) => {
-                const el = document.getElementById(`circle-${section.id}`);
+                const circleElement = document.getElementById(`circle-${section.id}`);
                 const isActive = section.id === activeCircleId;
-                let x, y, size;
 
                 if (!isMobile) {
-                    // --- PC VIEW: RESTORED ORIGINAL MATH ---
-                    size = isActive ? 120 : 100;
-                    const orbitRadius = 300;
-                    let angle;
-                    if (activeIndex === -1) {
-                        angle = (45 - (index * 30)) * (Math.PI / 180);
-                    } else if (index <= activeIndex) {
-                        angle = (135 + (index * 30)) * (Math.PI / 180);
+                    // --- RESTORED PC MATH: EXACTLY AS YOUR ORIGINAL CODE ---
+                    let targetAngleDegrees;
+                    let currentCircleDiameter = isActive ? 120 : 100;
+                    
+                    // Angle logic from original code
+                    if (index <= activeSectionIndex) {
+                        targetAngleDegrees = 135 + (index * 30);
                     } else {
-                        angle = (45 - ((index - (activeIndex + 1)) * 30)) * (Math.PI / 180);
+                        const relativeIndexOnRight = (activeSectionIndex === -1) ? index : index - (activeSectionIndex + 1);
+                        targetAngleDegrees = 45 - (relativeIndexOnRight * 30);
                     }
-                    x = centerX + orbitRadius * Math.cos(angle) - (size / 2);
-                    y = centerY - orbitRadius * Math.sin(angle) - (size / 2);
-                    el.style.transform = `translate(${x}px, ${y}px)`;
+
+                    const rad = targetAngleDegrees * (Math.PI / 180);
+                    const orbitRadius = 300; // Original orbit
+                    
+                    const x = centerX + orbitRadius * Math.cos(rad) - (currentCircleDiameter / 2);
+                    const y = centerY - orbitRadius * Math.sin(rad) - (currentCircleDiameter / 2);
+
+                    circleElement.style.transform = `translate(${x}px, ${y}px)`;
+                    circleElement.style.width = `${currentCircleDiameter}px`;
+                    circleElement.style.height = `${currentCircleDiameter}px`;
+                    circleElement.style.left = '0px'; 
+                    circleElement.style.top = '0px';
                 } else {
-                    // --- MOBILE VIEW: BALANCED ROWS ---
-                    size = window.innerWidth * 0.15;
+                    // --- MOBILE LOGIC: STATIC ROWS ---
+                    const mSize = window.innerWidth * 0.15;
                     const gap = window.innerWidth * 0.22;
                     const startX = (window.innerWidth - (gap * 3)) / 2;
-                    const vOffset = window.innerWidth * 0.58; 
+                    const vDist = window.innerWidth * 0.58; 
 
+                    let mx, my;
                     if (index < 4) {
-                        x = startX + (index * gap) - (size / 2);
-                        y = centerY - vOffset - (size / 2);
+                        mx = startX + (index * gap) - (mSize / 2);
+                        my = centerY - vDist - (mSize / 2);
                     } else {
-                        x = startX + ((index - 4) * gap) - (size / 2);
-                        y = centerY + vOffset - (size / 2);
+                        mx = startX + ((index - 4) * gap) - (mSize / 2);
+                        my = centerY + vDist - (mSize / 2);
                     }
-                    el.style.transform = `translate(${x}px, ${y}px)`;
+                    
+                    circleElement.style.width = `${mSize}px`;
+                    circleElement.style.height = `${mSize}px`;
+                    circleElement.style.transform = `translate(${mx}px, ${my}px)`;
                 }
-
-                el.style.width = `${size}px`;
-                el.style.height = `${size}px`;
-                el.classList.toggle('active', isActive);
+                
+                circleElement.classList.toggle('active', isActive);
             });
         }
 
-        function handleBtnClick(id) {
-            if (activeCircleId === id) {
+        function handleCircleClick(event) {
+            const clickedId = event.currentTarget.dataset.id;
+            if (activeCircleId === clickedId) {
                 activeCircleId = null;
                 document.getElementById('large-circle-title').textContent = introData.title;
                 document.getElementById('large-circle-text').textContent = introData.content;
             } else {
-                activeCircleId = id;
-                const data = sectionsData.find(s => s.id === id);
+                activeCircleId = clickedId;
+                const data = sectionsData.find(s => s.id === clickedId);
                 const num = sectionsData.indexOf(data) + 1;
                 document.getElementById('large-circle-title').textContent = `${num}. ${data.title}`.toUpperCase();
                 document.getElementById('large-circle-text').textContent = data.content;
             }
-            render();
+            renderCircles();
         }
 
         function init() {
@@ -248,23 +269,25 @@
                 const div = document.createElement('div');
                 div.className = 'small-circle';
                 div.id = `circle-${section.id}`;
+                div.dataset.id = section.id;
                 div.innerHTML = `
-                    <div class="flex items-center justify-center w-full h-full">
-                        <span class="circle-number font-bold">${index + 1}</span>
-                        <div class="circle-title" style="font-size: 0.9em;">${section.title.replace(/ /g, '<br/>')}</div>
+                    <div style="text-align: center;">
+                        <span class="circle-number" style="font-weight: 700;">${index + 1}</span>
+                        <div class="circle-title" style="font-size: 0.9em; font-weight: 600; line-height: 1.1;">${section.title.replace(/ /g, '<br/>')}</div>
                     </div>
                 `;
-                div.onclick = () => handleBtnClick(section.id);
+                div.addEventListener('click', handleCircleClick);
                 document.getElementById('small-circles-wrapper').appendChild(div);
             });
 
             document.getElementById('large-circle-title').textContent = introData.title;
             document.getElementById('large-circle-text').textContent = introData.content;
-            render();
-            window.addEventListener('resize', render);
+            
+            renderCircles();
+            window.addEventListener('resize', renderCircles);
         }
 
-        init();
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
