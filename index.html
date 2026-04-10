@@ -75,7 +75,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            overflow-y: auto;
+            overflow: hidden;
         }
 
         .large-circle-content p { font-size: 1.05rem; font-weight: 500; margin: 0; }
@@ -104,14 +104,50 @@
             border: 4px solid #413659;
         }
 
-        /* --- MOBILE OVERRIDES --- */
+        /* --- MOBILE VIEW ONLY --- */
         @media (max-width: 768px) {
-            .learning-activity-container { width: 100vw; height: 100vh; }
-            .large-circle { width: 85vw; height: 85vw; padding: 20px; }
-            .circle-title { display: none; }
+            body { padding-top: 60px; overflow-y: auto; }
+            .main-header { font-size: 1.25rem; padding: 1rem 0; }
+            
+            .learning-activity-container {
+                width: 100vw;
+                height: 140vw; /* Taller to accommodate top/bottom lines */
+            }
+
+            .large-circle {
+                width: 82vw;
+                height: 82vw;
+                padding: 15px;
+            }
+
+            /* Ensure text fits inside the circle on small screens */
+            .large-circle-content h2 { 
+                font-size: 0.9rem; 
+                margin-bottom: 5px; 
+                line-height: 1.2;
+            }
+            .large-circle-content p { 
+                font-size: 0.75rem; 
+                line-height: 1.3;
+                max-height: 60%;
+                overflow-y: auto;
+                padding: 0 10px;
+            }
+
+            .circle-title { display: none; } /* Numbers only on mobile for clean lines */
             .circle-number { font-size: 1.5rem !important; }
-            .small-circle { width: 14vw; height: 14vw; transition: background-color 0.3s; }
-            .small-circle.active { transform: none !important; }
+
+            .small-circle {
+                width: 13vw;
+                height: 13vw;
+                transition: background-color 0.3s, color 0.3s;
+            }
+            
+            .small-circle.active {
+                transform: none !important;
+                background-color: #C6B4D9;
+                color: #513873;
+            }
         }
     </style>
 </head>
@@ -153,49 +189,45 @@
             sectionsData.forEach((section, index) => {
                 const el = document.getElementById(`circle-${section.id}`);
                 const isActive = section.id === activeCircleId;
-                
+                let x, y, size;
+
                 if (!isMobile) {
-                    // --- FULL RESTORATION OF PC VIEW LOGIC ---
+                    // --- RESTORED PC VIEW LOGIC ---
+                    size = isActive ? 120 : 100;
                     let targetAngleDegrees;
-                    let size = isActive ? 120 : 100;
-                    
                     if (index <= activeIndex) {
                         targetAngleDegrees = 135 + (index * 30);
                     } else {
                         const relIdx = (activeIndex === -1) ? index : index - (activeIndex + 1);
                         targetAngleDegrees = 45 - (relIdx * 30);
                     }
-
                     const rad = targetAngleDegrees * (Math.PI / 180);
                     const orbitRadius = 300;
-                    const x = centerX + orbitRadius * Math.cos(rad) - (size / 2);
-                    const y = centerY - orbitRadius * Math.sin(rad) - (size / 2);
-
-                    el.style.width = `${size}px`;
-                    el.style.height = `${size}px`;
+                    x = centerX + orbitRadius * Math.cos(rad) - (size / 2);
+                    y = centerY - orbitRadius * Math.sin(rad) - (size / 2);
                     el.style.transform = `translate(${x}px, ${y}px)`;
                 } else {
-                    // --- MOBILE VIEW: LINE 1-4 TOP, 5-8 BOTTOM ---
-                    const mSize = window.innerWidth * 0.14;
+                    // --- MOBILE VIEW: STRAIGHT LINES ABOVE & BELOW ---
+                    size = window.innerWidth * 0.13;
                     const gap = window.innerWidth * 0.22;
-                    const startX = (window.innerWidth - (gap * 3)) / 2;
-                    const verticalDist = window.innerWidth * 0.58; // Distance from center
+                    const rowWidth = gap * 3;
+                    const startX = (window.innerWidth - rowWidth) / 2;
+                    const verticalOffset = window.innerWidth * 0.58; // Distance from center for both rows
 
-                    let mx, my;
                     if (index < 4) {
-                        // Top row 1,2,3,4
-                        mx = startX + (index * gap) - (mSize / 2);
-                        my = centerY - verticalDist - (mSize / 2);
+                        // Top row (1-4) in a straight line
+                        x = startX + (index * gap) - (size / 2);
+                        y = centerY - verticalOffset - (size / 2);
                     } else {
-                        // Bottom row 5,6,7,8
-                        mx = startX + ((index - 4) * gap) - (mSize / 2);
-                        my = centerY + verticalDist - (mSize / 2);
+                        // Bottom row (5-8) in a straight line
+                        x = startX + ((index - 4) * gap) - (size / 2);
+                        y = centerY + verticalOffset - (size / 2);
                     }
-
-                    el.style.width = `${mSize}px`;
-                    el.style.height = `${mSize}px`;
-                    el.style.transform = `translate(${mx}px, ${my}px)`;
+                    el.style.transform = `translate(${x}px, ${y}px)`;
                 }
+
+                el.style.width = `${size}px`;
+                el.style.height = `${size}px`;
                 el.classList.toggle('active', isActive);
             });
         }
@@ -208,7 +240,8 @@
             } else {
                 activeCircleId = id;
                 const data = sectionsData.find(s => s.id === id);
-                document.getElementById('large-circle-title').textContent = (sectionsData.indexOf(data) + 1) + ". " + data.title.toUpperCase();
+                const num = sectionsData.indexOf(data) + 1;
+                document.getElementById('large-circle-title').textContent = `${num}. ${data.title}`.toUpperCase();
                 document.getElementById('large-circle-text').textContent = data.content;
             }
             render();
@@ -220,9 +253,9 @@
                 div.className = 'small-circle';
                 div.id = `circle-${section.id}`;
                 div.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full w-full p-2">
+                    <div class="flex flex-col items-center justify-center h-full w-full">
                         <span class="circle-number font-bold">${index + 1}</span>
-                        <span class="circle-title text-[10px] leading-none mt-1">${section.title.replace(/ /g, '<br>')}</span>
+                        <div class="circle-title text-[9px] leading-tight px-1">${section.title.replace(/ /g, '<br>')}</div>
                     </div>
                 `;
                 div.onclick = () => handleClick(section.id);
