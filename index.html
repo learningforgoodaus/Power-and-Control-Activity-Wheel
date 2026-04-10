@@ -44,7 +44,6 @@
             align-items: center;
         }
 
-        /* --- DESKTOP STYLES (Kept Original) --- */
         .large-circle {
             width: 400px;
             height: 400px;
@@ -95,41 +94,51 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transition: transform 0.7s ease-in-out, width 0.3s, height 0.3s, background-color 0.3s;
+            transition: transform 0.7s ease-in-out, background-color 0.3s, color 0.3s;
             z-index: 20;
         }
 
         .small-circle.active {
             background-color: #C6B4D9;
             color: #513873;
-            border: 5px solid #413659;
+            border: 4px solid #413659;
         }
 
-        /* --- MOBILE STYLES (NEW LOGIC) --- */
+        /* --- MOBILE SPECIFIC OVERRIDES --- */
         @media (max-width: 768px) {
-            .main-header { font-size: 1.2rem; }
-            .learning-activity-container { width: 100vw; height: 100vh; }
+            body { overflow-y: auto; align-items: flex-start; padding-top: 100px; }
+            .main-header { font-size: 1.1rem; }
+            
+            .learning-activity-container {
+                width: 100vw;
+                height: 140vw; /* Taller container to fit rows top/bottom */
+            }
 
             .large-circle {
-                width: 90vw; /* Enlarge to fill screen width */
-                height: 90vw;
-                padding: 30px;
+                width: 85vw;
+                height: 85vw;
+                padding: 20px;
+                top: 50%; /* Centered vertically in the taller container */
             }
 
-            /* Hide text labels on mobile, keep numbers */
-            .circle-title { display: none; }
-            .circle-number { font-size: 1.5rem !important; }
+            .large-circle-content h2 { font-size: 1rem; margin-bottom: 8px; }
+            .large-circle-content p { font-size: 0.85rem; line-height: 1.4; }
 
-            /* Flip effect color for mobile */
-            .small-circle.active {
-                background-color: #9C7F9D !important; /* "Flip" color */
-                color: white !important;
-                transform: scale(1) !important; /* Stay in position as requested */
-            }
+            .circle-title { display: none; } /* Numbers only on mobile */
+            .circle-number { font-size: 1.4rem !important; }
 
             .small-circle {
                 width: 15vw;
                 height: 15vw;
+                /* Transition transform is disabled for mobile to prevent "flying" */
+                transition: background-color 0.3s, color 0.3s; 
+            }
+            
+            /* Flip effect: Active circle stays in place but changes color */
+            .small-circle.active {
+                transform: none !important; 
+                background-color: #C6B4D9;
+                color: #513873;
             }
         }
     </style>
@@ -159,11 +168,11 @@
             { id: 'economic', title: 'Using Economic Abuse', content: 'Stopping them from getting or keeping a job, making them ask for money, giving them an allowance, taking their money, or not letting them know about or access family income.' }
         ];
 
-        const introData = { title: 'POWER AND CONTROL', content: 'Select the outer circles to reveal information.' };
+        const introData = { title: 'POWER AND CONTROL', content: 'Select the numbered circles to reveal information.' };
         const container = document.querySelector('.learning-activity-container');
         let activeCircleId = null;
 
-        function renderCircles() {
+        function render() {
             const isMobile = window.innerWidth <= 768;
             const centerX = container.offsetWidth / 2;
             const centerY = container.offsetHeight / 2;
@@ -175,7 +184,7 @@
                 let x, y, size;
 
                 if (!isMobile) {
-                    // --- PC VIEW: ORIGINAL LOGIC ---
+                    // --- DESKTOP: ORIGINAL ORBITING LOGIC ---
                     size = isActive ? 120 : 100;
                     const orbitRadius = 300;
                     let angle;
@@ -188,25 +197,29 @@
                     }
                     x = centerX + orbitRadius * Math.cos(angle) - (size / 2);
                     y = centerY - orbitRadius * Math.sin(angle) - (size / 2);
+                    el.style.transform = `translate(${x}px, ${y}px)`;
                 } else {
-                    // --- MOBILE VIEW: 1-4 TOP, 5-8 BOTTOM ---
-                    size = container.offsetWidth * 0.15;
-                    const spacing = container.offsetWidth * 0.22; // Horizontal gap
-                    const rowOffset = container.offsetWidth * 0.35; // Vertical distance from center
+                    // --- MOBILE: FIXED ROWS (NO MOVEMENT) ---
+                    size = window.innerWidth * 0.15;
+                    const gap = window.innerWidth * 0.22;
+                    const rowWidth = gap * 3;
+                    const startX = (window.innerWidth - rowWidth) / 2;
                     
                     if (index < 4) {
-                        // Row 1 (Top): Circles 1-4
-                        x = (centerX - (spacing * 1.5)) + (index * spacing) - (size / 2);
-                        y = centerY - rowOffset - (size / 2);
+                        // Top Row (1-4)
+                        x = startX + (index * gap) - (size / 2);
+                        y = centerY - (window.innerWidth * 0.55); 
                     } else {
-                        // Row 2 (Bottom): Circles 5-8
-                        const bottomIdx = index - 4;
-                        x = (centerX - (spacing * 1.5)) + (bottomIdx * spacing) - (size / 2);
-                        y = centerY + rowOffset - (size / 2);
+                        // Bottom Row (5-8)
+                        x = startX + ((index - 4) * gap) - (size / 2);
+                        y = centerY + (window.innerWidth * 0.45);
                     }
+                    // Use left/top instead of transform to prevent conflict with desktop transitions
+                    el.style.transform = 'none';
+                    el.style.left = `${x}px`;
+                    el.style.top = `${y}px`;
                 }
 
-                el.style.transform = `translate(${x}px, ${y}px)`;
                 el.style.width = `${size}px`;
                 el.style.height = `${size}px`;
                 el.classList.toggle('active', isActive);
@@ -225,7 +238,7 @@
                 document.getElementById('large-circle-title').textContent = `${num}. ${data.title}`.toUpperCase();
                 document.getElementById('large-circle-text').textContent = data.content;
             }
-            renderCircles();
+            render();
         }
 
         function init() {
@@ -234,9 +247,9 @@
                 div.className = 'small-circle';
                 div.id = `circle-${section.id}`;
                 div.innerHTML = `
-                    <div style="text-align: center;">
-                        <span class="circle-number" style="font-weight: 700;">${index + 1}</span>
-                        <div class="circle-title" style="font-size: 0.9em; font-weight: 600; line-height: 1.1;">${section.title.replace(/ /g, '<br/>')}</div>
+                    <div class="flex items-center justify-center h-full w-full">
+                        <span class="circle-number font-bold text-lg">${index + 1}</span>
+                        <div class="circle-title text-[10px] leading-tight px-1">${section.title.replace(/ /g, '<br>')}</div>
                     </div>
                 `;
                 div.onclick = () => handleCircleClick(section.id);
@@ -245,11 +258,17 @@
 
             document.getElementById('large-circle-title').textContent = introData.title;
             document.getElementById('large-circle-text').textContent = introData.content;
-            renderCircles();
-            window.addEventListener('resize', renderCircles);
+            render();
+            window.addEventListener('resize', () => {
+                // Clear inline styles before re-render to handle mobile/desktop switch cleanly
+                document.querySelectorAll('.small-circle').forEach(c => {
+                    c.style.left = ''; c.style.top = '';
+                });
+                render();
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        init();
     </script>
 </body>
 </html>
