@@ -6,35 +6,37 @@
     <title>The Power and Control Wheel Activity</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Import Inter font for a clean, modern look */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F6F5F8;
+            background-color: #F6F5F8; /* Requested background color */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll on resize */
         }
 
+        /* Styling for the main heading */
         .main-header {
             position: fixed;
             top: 0;
             width: 100%;
             padding: 1.5rem 0 1rem 0;
             text-align: center;
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #413659;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-size: 1.875rem; /* 3xl */
+            font-weight: 700; /* bold */
+            color: #413659; /* BRAND COLOR: Darker Deep Purple */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(5px);
             z-index: 100;
         }
 
-        /* PC CONTAINER - Fixed 800px */
+        /* PC CONTAINER - Fixed 800px as per instructions */
         .learning-activity-container {
             position: relative;
             width: 800px;
@@ -42,13 +44,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 60px;
+            margin-top: 60px; /* Space for the fixed header */
         }
 
+        /* LARGE CIRCLE - PC Dimensions and styles are original/preserved */
         .large-circle {
             width: 400px;
             height: 400px;
-            background-color: #C6B4D9;
+            background-color: #C6B4D9; /* BRAND COLOR: Light Purple/Lavender */
             border-radius: 50%;
             display: flex;
             flex-direction: column;
@@ -61,10 +64,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #413659;
+            color: #413659; /* BRAND COLOR: Darker Deep Purple */
             line-height: 1.6;
             box-sizing: border-box;
-            border: 5px solid #9C7F9D;
+            border: 5px solid #9C7F9D; /* BRAND COLOR: Muted Rose/Mauve */
             z-index: 10;
         }
 
@@ -81,12 +84,13 @@
         .large-circle-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
         .large-circle-content p { font-size: 1.05rem; font-weight: 500; margin: 0; }
 
+        /* SMALL CIRCLES - PC Dimensions, math-based orbit, and transitions are original/preserved */
         .small-circle {
             position: absolute;
             width: 100px;
             height: 100px;
-            background-color: #513873;
-            color: #F6F5F8;
+            background-color: #513873; /* BRAND COLOR: Deep Purple */
+            color: #F6F5F8; /* Off-white text */
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -94,50 +98,71 @@
             text-align: center;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            /* Transform is smooth on PC, static on Mobile */
             transition: transform 0.7s ease-in-out, background-color 0.3s, color 0.3s;
             z-index: 20;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 5px;
             box-sizing: border-box;
+            line-height: 1.2;
         }
 
+        /* Small Circle active (PC only) */
         .small-circle.active {
-            background-color: #C6B4D9;
-            color: #513873;
-            border: 4px solid #413659;
+            width: 120px;
+            height: 120px;
+            border: 5px solid #413659; /* BRAND COLOR: Darker Deep Purple for strong contrast border */
+            background-color: #C6B4D9; /* BRAND COLOR: Light Purple/Lavender for active fill */
+            color: #513873; /* BRAND COLOR: Deep Purple for active text */
+            transform: scale(1.1);
         }
 
-        /* MOBILE OVERRIDES */
+        /* --- MOBILE OVERRIDES (STRICTLY ISOLATED) --- */
         @media (max-width: 768px) {
             body { align-items: flex-start; padding-top: 100px; overflow-y: auto; }
             .main-header { font-size: 1.2rem; }
             
             .learning-activity-container {
                 width: 100vw;
-                height: 150vw;
+                height: 150vw; /* Taller to fit top and bottom rows */
                 margin-top: 20px;
             }
 
             .large-circle {
-                width: 80vw;
-                height: 80vw;
+                width: 85vw; /* Enlarge central circle */
+                height: 85vw;
                 padding: 20px;
             }
 
-            .large-circle-content h2 { font-size: 1rem; margin-bottom: 8px; }
-            .large-circle-content p { font-size: 0.8rem; line-height: 1.4; padding: 0 5px; }
+            /* Center text content safety settings for mobile */
+            .large-circle-content h2 { font-size: 1rem; margin-bottom: 8px; line-height: 1.2; }
+            .large-circle-content p { 
+                font-size: 0.8rem; 
+                line-height: 1.4;
+                padding: 0 5px; 
+                max-height: 60%; /* Prevents text overflow */
+                overflow-y: auto; 
+            }
 
+            /* HIDE TEXT TITLES ON MOBILE, NUMBERS ONLY */
             .circle-title { display: none; }
-            .circle-number { font-size: 1.5rem !important; font-weight: 700; }
+            .circle-number { font-size: 1.5rem !important; }
 
             .small-circle {
                 width: 15vw;
                 height: 15vw;
+                /* No transform movement on mobile */
                 transition: background-color 0.3s;
             }
 
+            /* Active Color 'Flip' for mobile */
             .small-circle.active {
-                transform: none !important;
-                background-color: #C6B4D9;
-                color: #513873;
+                width: 15vw !important;
+                height: 15vw !important;
+                transform: none !important; /* Remain static in the line */
+                background-color: #9C7F9D; /* "Flip" color */
+                color: white;
             }
         }
     </style>
@@ -156,6 +181,7 @@
     </div>
 
     <script>
+        // Data for each category of the Power and Control Wheel
         const sectionsData = [
             { id: 'coercion', title: 'Using Coercion & Threats', content: 'Making and/or carrying out threats to hurt them, threatening to leave them, to commit suicide, or to report them to welfare, forcing them to drop charges, or making them do illegal things.' },
             { id: 'intimidation', title: 'Using Intimidation', content: 'Making them scared by using looks, actions, or gestures, smashing things, destroying their property, abusing pets, or showing weapons.' },
@@ -171,6 +197,7 @@
         const container = document.querySelector('.learning-activity-container');
         let activeCircleId = null;
 
+        // Dynamic resizing and positioning logic
         function render() {
             const isMobile = window.innerWidth <= 768;
             const centerX = container.offsetWidth / 2;
@@ -183,33 +210,40 @@
                 let x, y, size;
 
                 if (!isMobile) {
-                    // --- PC: ORIGINAL MATH ---
+                    // --- PC: ORIGINAL MATH-BASED ORBIT (PRESERVED) ---
                     size = isActive ? 120 : 100;
                     let targetAngleDegrees;
+                    
+                    // Specific angle logic from original provided code
                     if (index <= activeIndex) {
                         targetAngleDegrees = 135 + (index * 30);
                     } else {
                         const relIdx = (activeIndex === -1) ? index : index - (activeIndex + 1);
                         targetAngleDegrees = 45 - (relIdx * 30);
                     }
+                    
                     const rad = targetAngleDegrees * (Math.PI / 180);
-                    const orbitRadius = 300;
+                    const orbitRadius = 300; // original pixel radius
+                    
                     x = centerX + orbitRadius * Math.cos(rad) - (size / 2);
                     y = centerY - orbitRadius * Math.sin(rad) - (size / 2);
                     el.style.transform = `translate(${x}px, ${y}px)`;
                 } else {
-                    // --- MOBILE: STRAIGHT LINES TOP (1-4) & BOTTOM (5-8) ---
-                    size = window.innerWidth * 0.15;
-                    const gap = window.innerWidth * 0.22;
-                    const startX = (window.innerWidth - (gap * 3)) / 2;
-                    const vDist = window.innerWidth * 0.60; // Distance from center circle
+                    // --- MOBILE: STATIC GRID ROWS (1-4 TOP, 5-8 BOTTOM) ---
+                    size = window.innerWidth * 0.13; // size of dots
+                    const gap = window.innerWidth * 0.22; // horizontal gap
+                    const rowWidth = gap * 3;
+                    const startX = (window.innerWidth - rowWidth) / 2;
+                    const verticalDist = window.innerWidth * 0.58; // vertical distance from center
 
                     if (index < 4) {
+                        // Top row 1, 2, 3, 4 in a straight line
                         x = startX + (index * gap) - (size / 2);
-                        y = centerY - vDist - (size / 2);
+                        y = centerY - verticalDist - (size / 2);
                     } else {
+                        // Bottom row 5, 6, 7, 8 in a straight line
                         x = startX + ((index - 4) * gap) - (size / 2);
-                        y = centerY + vDist - (size / 2);
+                        y = centerY + verticalDist - (size / 2);
                     }
                     el.style.transform = `translate(${x}px, ${y}px)`;
                 }
@@ -220,20 +254,24 @@
             });
         }
 
+        // Handle clicks on small circles
         function handleClick(id) {
             if (activeCircleId === id) {
+                // Clicking the active one toggles back to intro state
                 activeCircleId = null;
                 document.getElementById('large-circle-title').textContent = introData.title;
                 document.getElementById('large-circle-text').textContent = introData.content;
             } else {
                 activeCircleId = id;
                 const data = sectionsData.find(s => s.id === id);
-                document.getElementById('large-circle-title').textContent = (sectionsData.indexOf(data) + 1) + ". " + data.title.toUpperCase();
+                const number = sectionsData.indexOf(data) + 1;
+                document.getElementById('large-circle-title').textContent = `${number}. ${data.title}`.toUpperCase();
                 document.getElementById('large-circle-text').textContent = data.content;
             }
             render();
         }
 
+        // Initialize elements and layout
         function init() {
             sectionsData.forEach((section, index) => {
                 const div = document.createElement('div');
@@ -242,7 +280,7 @@
                 div.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full w-full">
                         <span class="circle-number font-bold">${index + 1}</span>
-                        <div class="circle-title text-[10px] leading-tight mt-1 px-1">${section.title.replace(/ /g, '<br>')}</div>
+                        <div class="circle-title text-[10px] leading-tight px-1">${section.title.replace(/ /g, '<br>')}</div>
                     </div>
                 `;
                 div.onclick = () => handleClick(section.id);
@@ -251,6 +289,7 @@
             document.getElementById('large-circle-title').textContent = introData.title;
             document.getElementById('large-circle-text').textContent = introData.content;
             render();
+            // Listener for window resize to handle PC/Mobile switch
             window.addEventListener('resize', render);
         }
 
