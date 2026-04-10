@@ -1,259 +1,879 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>The Power and Control Wheel Activity</title>
+
+    <!-- Tailwind CSS for utility classes and responsive design -->
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
+
+        /* Import Inter font for a clean, modern look */
+
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
+
+
         body {
+
             font-family: 'Inter', sans-serif;
-            background-color: #F6F5F8;
+
+            background-color: #F6F5F8; /* Requested background color */
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
+
             min-height: 100vh;
+
             margin: 0;
-            overflow-x: hidden;
+
+            overflow: hidden;
+
+            padding-top: 80px; /* Space for the fixed header */
+
         }
+
+
+
+        /* Styling for the main heading */
 
         .main-header {
+
             position: fixed;
+
             top: 0;
+
             width: 100%;
-            padding: 1.5rem 0 1rem 0;
+
+            padding: 1.5rem 0 0.5rem 0;
+
             text-align: center;
-            font-size: 1.875rem;
-            font-weight: 700;
-            color: #413659;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 255, 255, 0.95);
+
+            font-size: 1.875rem; /* 3xl */
+
+            font-weight: 700; /* bold */
+
+            color: #413659; /* BRAND COLOR: Darker Deep Purple */
+
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+
+            background-color: rgba(255, 255, 255, 0.9);
+
             backdrop-filter: blur(5px);
-            z-index: 100;
+
+            z-index: 20;
+
         }
 
-        /* PC CONTAINER - Fixed 800px */
+
+
+        /* Main container for the entire activity */
+
         .learning-activity-container {
+
             position: relative;
+
             width: 800px;
+
             height: 800px;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
+
         }
+
+
+
+        /* Styling for the large central circle */
 
         .large-circle {
+
             width: 400px;
+
             height: 400px;
-            background-color: #C6B4D9;
+
+            background-color: #C6B4D9; /* BRAND COLOR: Light Purple/Lavender */
+
             border-radius: 50%;
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
+
             align-items: center;
+
             padding: 40px;
+
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
             transition: all 0.5s ease-in-out;
+
             position: absolute;
+
             top: 50%;
+
             left: 50%;
+
             transform: translate(-50%, -50%);
-            color: #413659;
+
+            color: #413659; /* BRAND COLOR: Darker Deep Purple */
+
             line-height: 1.6;
+
             box-sizing: border-box;
-            border: 5px solid #9C7F9D;
-            z-index: 10;
+
+            border: 5px solid #9C7F9D; /* BRAND COLOR: Muted Rose/Mauve */
+
         }
+
+
 
         .large-circle-content {
+
             width: 100%;
+
             height: 100%;
+
             display: flex;
+
             flex-direction: column;
+
             justify-content: center;
+
             align-items: center;
+
             text-align: center;
+
+            overflow-y: auto;
+
         }
 
-        .large-circle-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
-        .large-circle-content p { font-size: 1.05rem; font-weight: 500; margin: 0; }
+
+
+        /* Override general paragraph style for list context */
+
+        .large-circle-content p {
+
+            font-size: 1.05rem;
+
+            font-weight: 500;
+
+            word-wrap: break-word;
+
+            overflow-wrap: break-word;
+
+            margin: 0;
+
+        }
+
+        
+
+        .large-circle-content h2 {
+
+            font-size: 1.5rem;
+
+            font-weight: 700;
+
+            margin-bottom: 15px;
+
+        }
+
+
+
+        /* Wrapper for small circles, positioned to cover the main container */
+
+        #small-circles-wrapper {
+
+            position: absolute;
+
+            width: 100%;
+
+            height: 100%;
+
+            top: 0;
+
+            left: 0;
+
+        }
+
+
+
+        /* Styling for individual small circles (Spokes) */
 
         .small-circle {
+
             position: absolute;
+
             width: 100px;
+
             height: 100px;
-            background-color: #513873;
-            color: #F6F5F8;
+
+            background-color: #513873; /* BRAND COLOR: Deep Purple */
+
+            color: #F6F5F8; /* Off-white text */
+
             border-radius: 50%;
+
             display: flex;
+
             justify-content: center;
+
             align-items: center;
+
             text-align: center;
+
             cursor: pointer;
+
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transition: transform 0.7s ease-in-out, background-color 0.3s, color 0.3s;
-            z-index: 20;
+
+            transition: transform 0.7s ease-in-out,
+
+                        width 0.3s ease-in-out, height 0.3s ease-in-out,
+
+                        border 0.3s ease-in-out, color 0.3s ease-in-out,
+
+                        background-color 0.3s ease-in-out;
+
+            font-size: 0.8rem;
+
+            font-weight: 600;
+
+            padding: 5px;
+
+            box-sizing: border-box;
+
+            line-height: 1.2;
+
         }
+
+
+
+        /* Styling for the active (clicked) small circle */
 
         .small-circle.active {
-            background-color: #C6B4D9;
-            color: #513873;
-            border: 4px solid #413659;
+
+            width: 120px;
+
+            height: 120px;
+
+            border: 5px solid #413659; /* BRAND COLOR: Darker Deep Purple for strong contrast border */
+
+            background-color: #C6B4D9; /* BRAND COLOR: Light Purple/Lavender for active fill */
+
+            color: #513873; /* BRAND COLOR: Deep Purple for active text */
+
+            z-index: 10;
+
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+
+            transform: scale(1.1);
+
         }
 
-        /* MOBILE OVERRIDES */
+
+
+        /* Responsive adjustments for smaller screens */
+
         @media (max-width: 768px) {
-            body { align-items: center; overflow-y: auto; }
-            .main-header { font-size: 1.25rem; padding: 1rem 0; }
-            
-            .learning-activity-container {
-                width: 100vw;
-                height: 160vw; /* Taller to fit the lines above and below */
+
+            .main-header {
+
+                font-size: 1.3rem;
+
+                padding: 1rem 0 0.5rem 0;
+
             }
+
+            body {
+
+                padding-top: 60px;
+
+            }
+
+            .learning-activity-container {
+
+                width: 95vw;
+
+                height: 95vw;
+
+            }
+
+
 
             .large-circle {
-                width: 80vw;
-                height: 80vw;
+
+                width: 65vw;
+
+                height: 65vw;
+
                 padding: 15px;
+
             }
 
-            .large-circle-content h2 { font-size: 0.9rem; margin-bottom: 5px; }
-            .large-circle-content p { font-size: 0.75rem; line-height: 1.3; max-height: 70%; overflow-y: auto; }
 
-            .circle-title { display: none; }
-            .circle-number { font-size: 1.5rem !important; font-weight: 700; }
+
+            .large-circle-content p {
+
+                font-size: 0.8rem;
+
+            }
+
+
+
+            .large-circle-content h2 {
+
+                font-size: 1.2rem;
+
+            }
+
+
 
             .small-circle {
-                width: 14vw;
-                height: 14vw;
-                transition: background-color 0.3s; /* No fly animation on mobile */
+
+                width: 17vw;
+
+                height: 17vw;
+
+                font-size: 0.6rem;
+
+                padding: 3px;
+
             }
+
+
 
             .small-circle.active {
-                transform: none !important;
-                background-color: #9C7F9D;
-                color: white;
+
+                width: 20vw;
+
+                height: 20vw;
+
             }
+
         }
+
     </style>
+
 </head>
+
 <body>
-    <header class="main-header">Tactics used to gain power and control</header>
+
+    <!-- New Main Heading -->
+
+    <header class="main-header">
+
+        Tactics used to gain power and control
+
+    </header>
+
+
 
     <div class="learning-activity-container">
+
+        <!-- Large central circle for displaying content -->
+
         <div id="large-circle" class="large-circle">
+
             <div class="large-circle-content">
+
+                <!-- Content will be set by JavaScript on load -->
+
                 <h2 id="large-circle-title"></h2>
+
                 <p id="large-circle-text"></p>
+
             </div>
+
         </div>
+
+        <!-- Wrapper for small circles, where they will be dynamically added by JavaScript -->
+
         <div id="small-circles-wrapper"></div>
+
     </div>
 
+
+
     <script>
+
+        // Data for each segment of the Power and Control Wheel
+
+        // Content now uses gender-neutral pronouns (they/them/their/themselves).
+
         const sectionsData = [
+
             { id: 'coercion', title: 'Using Coercion & Threats', content: 'Making and/or carrying out threats to hurt them, threatening to leave them, to commit suicide, or to report them to welfare, forcing them to drop charges, or making them do illegal things.' },
+
             { id: 'intimidation', title: 'Using Intimidation', content: 'Making them scared by using looks, actions, or gestures, smashing things, destroying their property, abusing pets, or showing weapons.' },
+
             { id: 'emotional', title: 'Using Emotional Abuse', content: 'Putting them down, making them feel bad about themselves, calling them names, making them think they\'re crazy, playing mind games, humiliating them, or making them feel guilty.' },
+
             { id: 'isolation', title: 'Using Isolation', content: 'Controlling what they do, who they see and talks to, what they read, or where they go, limiting their involvement with others, or using jealousy to excuse these actions.' },
+
             { id: 'minimize', title: 'Minimising Denying & Blaming', content: 'Making light of the abuse and not taking their worries seriously, saying the abuse didn\'t happen, shifting responsibility for abusive behaviour, or saying they caused it.' },
+
             { id: 'children', title: 'Using Children', content: 'Making them feel guilty about the children, using the children to pass on messages, using visitation to harass them, or threatening to take the children away.' },
+
             { id: 'privilege', title: 'Using Male Privilege', content: 'Treating them like a servant, making all the big decisions, acting like the master of the house, or defining what gender roles should be.' },
+
             { id: 'economic', title: 'Using Economic Abuse', content: 'Stopping them from getting or keeping a job, making them ask for money, giving them an allowance, taking their money, or not letting them know about or access family income.' }
+
         ];
 
-        const introData = { title: 'POWER AND CONTROL', content: 'Select the outer circles to reveal information.' };
-        const container = document.querySelector('.learning-activity-container');
-        let activeCircleId = null;
 
-        function render() {
-            const isMobile = window.innerWidth <= 768;
-            const centerX = container.offsetWidth / 2;
-            const centerY = container.offsetHeight / 2;
-            const activeIndex = sectionsData.findIndex(s => s.id === activeCircleId);
+
+        // Content for the initial Introduction circle - MADE SHORTER
+
+        const introData = {
+
+            title: 'POWER AND CONTROL',
+
+            content: 'Select the outer circles to reveal information.'
+
+        };
+
+
+
+        // Get references to key DOM elements
+
+        const largeCircleTitle = document.getElementById('large-circle-title');
+
+        const largeCircleText = document.getElementById('large-circle-text');
+
+        const smallCirclesWrapper = document.getElementById('small-circles-wrapper');
+
+        const learningActivityContainer = document.querySelector('.learning-activity-container');
+
+
+
+        // State variables
+
+        let activeCircleId = null; // null means Intro is active
+
+        let lastClickedSectionIndex = -1;
+
+
+
+        // Base sizes for calculations (desktop reference)
+
+        const BASE_CONTAINER_WIDTH = 800;
+
+        const LARGE_CIRCLE_DIAMETER_PX = 400;
+
+        const SMALL_CIRCLE_DIAMETER_PX = 100;
+
+        const ACTIVE_SMALL_CIRCLE_DIAMETER_PX = 120;
+
+        const PADDING_FROM_LARGE_CIRCLE = 60;
+
+
+
+        // Angle steps for distributing 8 circles
+
+        const LEFT_SLOT_ANGLE_STEP_DEGREES = 30;
+
+        const RIGHT_SLOT_ANGLE_STEP_DEGREES = 30;
+
+        
+
+        // Define starting angles for the rotated arcs (Original Logic)
+
+        const rightArcTopAngleDegrees = 45;
+
+        const leftArcTopAngleDegrees = 135;
+
+
+
+        /**
+
+         * Calculates dynamic sizes based on the current width of the main container.
+
+         * @returns {object} An object containing scaled diameters and padding.
+
+         */
+
+        function getDynamicSizes() {
+
+            const containerWidth = learningActivityContainer.offsetWidth;
+
+            const containerHeight = learningActivityContainer.offsetHeight;
+
+            // Use the smaller dimension to prevent overflow on non-square viewports
+
+            const refSize = Math.min(containerWidth, containerHeight);
+
+            
+
+            // Calculate ratios based on base desktop sizes
+
+            const largeCircleRatio = LARGE_CIRCLE_DIAMETER_PX / BASE_CONTAINER_WIDTH;
+
+            const smallCircleRatio = SMALL_CIRCLE_DIAMETER_PX / BASE_CONTAINER_WIDTH;
+
+            const activeSmallCircleRatio = ACTIVE_SMALL_CIRCLE_DIAMETER_PX / BASE_CONTAINER_WIDTH;
+
+            const paddingRatio = PADDING_FROM_LARGE_CIRCLE / BASE_CONTAINER_WIDTH;
+
+
+
+            return {
+
+                largeCircleDiameter: refSize * largeCircleRatio,
+
+                smallCircleDiameter: refSize * smallCircleRatio,
+
+                activeSmallCircleDiameter: refSize * activeSmallCircleRatio,
+
+                padding: refSize * paddingRatio
+
+            };
+
+        }
+
+
+
+        /**
+
+         * Calculates the radius of the orbit for the small circles around the large circle.
+
+         * @returns {number} The orbit radius in pixels.
+
+         */
+
+        function getOrbitRadius() {
+
+            const sizes = getDynamicSizes();
+
+            // Orbit radius is half of large circle + half of small circle + padding
+
+            return (sizes.largeCircleDiameter / 2) + (sizes.smallCircleDiameter / 2) + sizes.padding;
+
+        }
+
+
+
+        /**
+
+         * Converts degrees to radians for trigonometric calculations.
+
+         * @param {number} degrees - Angle in degrees.
+
+         * @returns {number} Angle in radians.
+
+         */
+
+        function degToRad(degrees) {
+
+            return degrees * (Math.PI / 180);
+
+        }
+
+
+
+        /**
+
+         * Renders and updates the positions and states of all small circles.
+
+         */
+
+        function renderCircles() {
+
+            const orbitRadius = getOrbitRadius();
+
+            const sizes = getDynamicSizes();
+
+            // Calculate the center of the learning activity container
+
+            const containerCenterX = learningActivityContainer.offsetWidth / 2;
+
+            const containerCenterY = learningActivityContainer.offsetHeight / 2;
+
+
+
+            // Find the index of the currently active section in the original data array
+
+            const activeSectionIndex = sectionsData.findIndex(s => s.id === activeCircleId);
+
+
 
             sectionsData.forEach((section, index) => {
-                const el = document.getElementById(`circle-${section.id}`);
-                const isActive = section.id === activeCircleId;
-                let x, y, size;
 
-                if (!isMobile) {
-                    // --- PC: RESTORED ORIGINAL FLYING LOGIC ---
-                    size = isActive ? 120 : 100;
-                    let targetAngleDegrees;
-                    if (index <= activeIndex) {
-                        targetAngleDegrees = 135 + (index * 30);
-                    } else {
-                        const relIdx = (activeIndex === -1) ? index : index - (activeIndex + 1);
-                        targetAngleDegrees = 45 - (relIdx * 30);
-                    }
-                    const rad = targetAngleDegrees * (Math.PI / 180);
-                    const orbitRadius = 300;
-                    x = centerX + orbitRadius * Math.cos(rad) - (size / 2);
-                    y = centerY - orbitRadius * Math.sin(rad) - (size / 2);
-                    el.style.transform = `translate(${x}px, ${y}px)`;
+                const circleElement = document.getElementById(`circle-${section.id}`);
+
+                if (!circleElement) return;
+
+
+
+                let targetAngleDegrees;
+
+                let currentCircleDiameter = sizes.smallCircleDiameter;
+
+
+
+                // Determine if the current circle is the active one
+
+                if (section.id === activeCircleId) {
+
+                    currentCircleDiameter = sizes.activeSmallCircleDiameter;
+
+                    circleElement.classList.add('active');
+
                 } else {
-                    // --- MOBILE: FIXED HORIZONTAL LINES ---
-                    size = window.innerWidth * 0.14;
-                    const gap = window.innerWidth * 0.22;
-                    const startX = (window.innerWidth - (gap * 3)) / 2;
-                    const verticalSpacing = window.innerWidth * 0.62; // Distance from center
 
-                    if (index < 4) {
-                        // TOP LINE (1,2,3,4)
-                        x = startX + (index * gap) - (size / 2);
-                        y = centerY - verticalSpacing - (size / 2);
-                    } else {
-                        // BOTTOM LINE (5,6,7,8)
-                        x = startX + ((index - 4) * gap) - (size / 2);
-                        y = centerY + verticalSpacing - (size / 2);
-                    }
-                    el.style.transform = `translate(${x}px, ${y}px)`;
+                    circleElement.classList.remove('active');
+
                 }
 
-                el.style.width = `${size}px`;
-                el.style.height = `${size}px`;
-                el.classList.toggle('active', isActive);
+
+
+                // If no circle is active (initial load), activeSectionIndex = -1.
+
+                // This means the logic falls directly into the 'else' block, replicating the 
+
+                // unique starting position and dynamic movement you liked.
+
+                
+
+                // Circles up to and including the active one move to the left arc.
+
+                if (index <= activeSectionIndex) {
+
+                    targetAngleDegrees = leftArcTopAngleDegrees + (index * LEFT_SLOT_ANGLE_STEP_DEGREES);
+
+                }
+
+                // The remaining circles (or ALL circles if activeSectionIndex is -1) move to the right arc.
+
+                else {
+
+                    const relativeIndexOnRight = index - (activeSectionIndex + 1);
+
+                    targetAngleDegrees = rightArcTopAngleDegrees - (relativeIndexOnRight * RIGHT_SLOT_ANGLE_STEP_DEGREES);
+
+                    
+
+                    if (targetAngleDegrees < 0) {
+
+                        targetAngleDegrees += 360;
+
+                    }
+
+                }
+
+
+
+                const targetAngleRadians = degToRad(targetAngleDegrees);
+
+
+
+                // Calculate X and Y positions based on the calculated angle and orbit radius
+
+                // Subtract half of the circle's diameter to center it on the calculated point.
+
+                const x = containerCenterX + orbitRadius * Math.cos(targetAngleRadians) - (currentCircleDiameter / 2);
+
+                const y = containerCenterY - orbitRadius * Math.sin(targetAngleRadians) - (currentCircleDiameter / 2);
+
+                
+
+                // Apply the calculated position and dimensions to the circle element
+
+                circleElement.style.transform = `translate(${x}px, ${y}px)`;
+
+                circleElement.style.width = `${currentCircleDiameter}px`;
+
+                circleElement.style.height = `${currentCircleDiameter}px`;
+
             });
+
         }
 
-        function handleClick(id) {
-            if (activeCircleId === id) {
-                activeCircleId = null;
-                document.getElementById('large-circle-title').textContent = introData.title;
-                document.getElementById('large-circle-text').textContent = introData.content;
+
+
+        /**
+
+         * Handles the click event on a small circle.
+
+         * @param {Event} event - The click event object.
+
+         */
+
+        function handleCircleClick(event) {
+
+            const clickedCircle = event.currentTarget;
+
+            const clickedId = clickedCircle.dataset.id;
+
+            const newIndex = sectionsData.findIndex(s => s.id === clickedId);
+
+            
+
+            // If the same circle is clicked again, return to avoid unnecessary updates
+
+            if (activeCircleId === clickedId) {
+
+                // Return to Intro state
+
+                activeCircleId = null; 
+
+                lastClickedSectionIndex = -1;
+
+
+
+                largeCircleTitle.textContent = introData.title.toUpperCase();
+
+                largeCircleText.textContent = introData.content;
+
+
+
             } else {
-                activeCircleId = id;
-                const data = sectionsData.find(s => s.id === id);
-                document.getElementById('large-circle-title').textContent = (sectionsData.indexOf(data) + 1) + ". " + data.title.toUpperCase();
-                document.getElementById('large-circle-text').textContent = data.content;
+
+                 // Update state
+
+                lastClickedSectionIndex = newIndex;
+
+                activeCircleId = clickedId;
+
+
+
+                // Update the content of the large central circle with the selected section's data
+
+                const selectedSection = sectionsData[newIndex];
+
+                if (selectedSection) {
+
+                    // Get the title, which is now split into number and text
+
+                    const number = newIndex + 1;
+
+                    const titleText = selectedSection.title;
+
+                    
+
+                    // Capitalize the title and ensure a space between number and title
+
+                    largeCircleTitle.textContent = `${number}. ${titleText}`.toUpperCase();
+
+                    largeCircleText.textContent = selectedSection.content;
+
+                }
+
             }
-            render();
+
+
+
+            // Re-render all circles to update their positions and visual states based on the new state
+
+            renderCircles();
+
         }
+
+
+
+        /**
+
+         * Initializes the learning activity.
+
+         */
 
         function init() {
+
+            // Dynamically create and append small circle elements to the wrapper
+
             sectionsData.forEach((section, index) => {
-                const div = document.createElement('div');
-                div.className = 'small-circle';
-                div.id = `circle-${section.id}`;
-                div.innerHTML = `
-                    <div class="flex flex-col items-center justify-center h-full w-full">
-                        <span class="circle-number font-bold">${index + 1}</span>
-                        <div class="circle-title text-[10px] leading-tight mt-1 px-1">${section.title.replace(/ /g, '<br>')}</div>
+
+                const circleDiv = document.createElement('div');
+
+                circleDiv.classList.add('small-circle');
+
+                circleDiv.id = `circle-${section.id}`;
+
+                circleDiv.dataset.id = section.id;
+
+                
+
+                // Add number and title with line breaks
+
+                const circleNumber = index + 1;
+
+                
+
+                // Create content structure for number and title
+
+                circleDiv.innerHTML = `
+
+                    <div style="text-align: center;">
+
+                        <span class="circle-number" style="font-size: 1.1em; font-weight: 700;">${circleNumber}</span>
+
+                        <div class="circle-title" style="font-size: 0.9em; font-weight: 600; line-height: 1.1;">${section.title.replace(/ /g, '<br/>')}</div>
+
                     </div>
+
                 `;
-                div.onclick = () => handleClick(section.id);
-                document.getElementById('small-circles-wrapper').appendChild(div);
+
+                // Add a click event listener to each small circle
+
+                circleDiv.addEventListener('click', handleCircleClick);
+
+                smallCirclesWrapper.appendChild(circleDiv);
+
             });
-            document.getElementById('large-circle-title').textContent = introData.title;
-            document.getElementById('large-circle-text').textContent = introData.content;
-            render();
-            window.addEventListener('resize', render);
+
+
+
+            // --- Initial Load Logic: Display the Intro Circle (activeCircleId is null) ---
+
+            activeCircleId = null; 
+
+            lastClickedSectionIndex = -1; 
+
+            
+
+            // Manually set the large circle content to the introduction text
+
+            largeCircleTitle.textContent = introData.title.toUpperCase();
+
+            largeCircleText.textContent = introData.content;
+
+            
+
+            // Perform the initial layout of circles (using the dynamic movement logic as default)
+
+            renderCircles();
+
+
+
+            // Add an event listener to re-render circles when the window is resized.
+
+            window.addEventListener('resize', renderCircles);
+
         }
 
-        init();
+
+
+        // Call the initialization function once the DOM is fully loaded to set up the activity
+
+        document.addEventListener('DOMContentLoaded', init);
+
     </script>
+
 </body>
+
 </html>
