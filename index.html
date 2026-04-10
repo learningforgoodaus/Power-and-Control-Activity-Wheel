@@ -16,25 +16,25 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow: hidden;
-            padding-top: 80px;
+            overflow-x: hidden;
         }
 
         .main-header {
             position: fixed;
             top: 0;
             width: 100%;
-            padding: 1.5rem 0 0.5rem 0;
+            padding: 1.5rem 0 1rem 0;
             text-align: center;
             font-size: 1.875rem;
             font-weight: 700;
             color: #413659;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(5px);
             z-index: 100;
         }
 
+        /* PC CONTAINER - Fixed 800px */
         .learning-activity-container {
             position: relative;
             width: 800px;
@@ -42,6 +42,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-top: 60px;
         }
 
         .large-circle {
@@ -75,11 +76,10 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            overflow: hidden;
         }
 
-        .large-circle-content p { font-size: 1.05rem; font-weight: 500; margin: 0; }
         .large-circle-content h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 15px; }
+        .large-circle-content p { font-size: 1.05rem; font-weight: 500; margin: 0; }
 
         .small-circle {
             position: absolute;
@@ -96,6 +96,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             transition: transform 0.7s ease-in-out, background-color 0.3s, color 0.3s;
             z-index: 20;
+            box-sizing: border-box;
         }
 
         .small-circle.active {
@@ -104,45 +105,35 @@
             border: 4px solid #413659;
         }
 
-        /* --- MOBILE VIEW ONLY --- */
+        /* MOBILE OVERRIDES */
         @media (max-width: 768px) {
-            body { padding-top: 60px; overflow-y: auto; }
-            .main-header { font-size: 1.25rem; padding: 1rem 0; }
+            body { align-items: flex-start; padding-top: 100px; overflow-y: auto; }
+            .main-header { font-size: 1.2rem; }
             
             .learning-activity-container {
                 width: 100vw;
-                height: 140vw; /* Taller to accommodate top/bottom lines */
+                height: 150vw;
+                margin-top: 20px;
             }
 
             .large-circle {
-                width: 82vw;
-                height: 82vw;
-                padding: 15px;
+                width: 80vw;
+                height: 80vw;
+                padding: 20px;
             }
 
-            /* Ensure text fits inside the circle on small screens */
-            .large-circle-content h2 { 
-                font-size: 0.9rem; 
-                margin-bottom: 5px; 
-                line-height: 1.2;
-            }
-            .large-circle-content p { 
-                font-size: 0.75rem; 
-                line-height: 1.3;
-                max-height: 60%;
-                overflow-y: auto;
-                padding: 0 10px;
-            }
+            .large-circle-content h2 { font-size: 1rem; margin-bottom: 8px; }
+            .large-circle-content p { font-size: 0.8rem; line-height: 1.4; padding: 0 5px; }
 
-            .circle-title { display: none; } /* Numbers only on mobile for clean lines */
-            .circle-number { font-size: 1.5rem !important; }
+            .circle-title { display: none; }
+            .circle-number { font-size: 1.5rem !important; font-weight: 700; }
 
             .small-circle {
-                width: 13vw;
-                height: 13vw;
-                transition: background-color 0.3s, color 0.3s;
+                width: 15vw;
+                height: 15vw;
+                transition: background-color 0.3s;
             }
-            
+
             .small-circle.active {
                 transform: none !important;
                 background-color: #C6B4D9;
@@ -192,7 +183,7 @@
                 let x, y, size;
 
                 if (!isMobile) {
-                    // --- RESTORED PC VIEW LOGIC ---
+                    // --- PC: ORIGINAL MATH ---
                     size = isActive ? 120 : 100;
                     let targetAngleDegrees;
                     if (index <= activeIndex) {
@@ -207,21 +198,18 @@
                     y = centerY - orbitRadius * Math.sin(rad) - (size / 2);
                     el.style.transform = `translate(${x}px, ${y}px)`;
                 } else {
-                    // --- MOBILE VIEW: STRAIGHT LINES ABOVE & BELOW ---
-                    size = window.innerWidth * 0.13;
+                    // --- MOBILE: STRAIGHT LINES TOP (1-4) & BOTTOM (5-8) ---
+                    size = window.innerWidth * 0.15;
                     const gap = window.innerWidth * 0.22;
-                    const rowWidth = gap * 3;
-                    const startX = (window.innerWidth - rowWidth) / 2;
-                    const verticalOffset = window.innerWidth * 0.58; // Distance from center for both rows
+                    const startX = (window.innerWidth - (gap * 3)) / 2;
+                    const vDist = window.innerWidth * 0.60; // Distance from center circle
 
                     if (index < 4) {
-                        // Top row (1-4) in a straight line
                         x = startX + (index * gap) - (size / 2);
-                        y = centerY - verticalOffset - (size / 2);
+                        y = centerY - vDist - (size / 2);
                     } else {
-                        // Bottom row (5-8) in a straight line
                         x = startX + ((index - 4) * gap) - (size / 2);
-                        y = centerY + verticalOffset - (size / 2);
+                        y = centerY + vDist - (size / 2);
                     }
                     el.style.transform = `translate(${x}px, ${y}px)`;
                 }
@@ -240,8 +228,7 @@
             } else {
                 activeCircleId = id;
                 const data = sectionsData.find(s => s.id === id);
-                const num = sectionsData.indexOf(data) + 1;
-                document.getElementById('large-circle-title').textContent = `${num}. ${data.title}`.toUpperCase();
+                document.getElementById('large-circle-title').textContent = (sectionsData.indexOf(data) + 1) + ". " + data.title.toUpperCase();
                 document.getElementById('large-circle-text').textContent = data.content;
             }
             render();
@@ -255,7 +242,7 @@
                 div.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-full w-full">
                         <span class="circle-number font-bold">${index + 1}</span>
-                        <div class="circle-title text-[9px] leading-tight px-1">${section.title.replace(/ /g, '<br>')}</div>
+                        <div class="circle-title text-[10px] leading-tight mt-1 px-1">${section.title.replace(/ /g, '<br>')}</div>
                     </div>
                 `;
                 div.onclick = () => handleClick(section.id);
